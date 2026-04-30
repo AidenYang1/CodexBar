@@ -34,133 +34,6 @@
 "pref.general.cost.last_attempt" = "%@: last attempt %@";
 "pref.general.cost.no_data" = "%@: no data yet";
 
-/* ===== Display Pane ===== */
-"pref.display.section.menu_bar" = "Menu bar";
-"pref.display.merge_icons.title" = "Merge Icons";
-"pref.display.merge_icons.subtitle" = "Use a single menu bar icon with a provider switcher.";
-"pref.display.switcher_icons.title" = "Switcher shows icons";
-"pref.display.switcher_icons.subtitle" = "Show provider icons in the switcher (otherwise show a weekly progress line).";
-"pref.display.highest_usage.title" = "Show most-used provider";
-"pref.display.highest_usage.subtitle" = "Menu bar auto-shows the provider closest to its rate limit.";
-"pref.display.brand_icon.title" = "Menu bar shows percent";
-"pref.display.brand_icon.subtitle" = "Replace critter bars with provider branding icons and a percentage.";
-"pref.display.display_mode.title" = "Display mode";
-"pref.display.display_mode.subtitle" = "Choose what to show in the menu bar (Pace shows usage vs. expected).";
-"pref.display.section.menu_content" = "Menu content";
-"pref.display.show_used.title" = "Show usage as used";
-"pref.display.show_used.subtitle" = "Progress bars fill as you consume quota (instead of showing remaining).";
-"pref.display.reset_clock.title" = "Show reset time as clock";
-"pref.display.reset_clock.subtitle" = "Display reset times as absolute clock values instead of countdowns.";
-"pref.display.credits_extra.title" = "Show credits + extra usage";
-"pref.display.credits_extra.subtitle" = "Show Codex Credits and Claude Extra usage sections in the menu.";
-"pref.display.all_token_accounts.title" = "Show all token accounts";
-"pref.display.all_token_accounts.subtitle" = "Stack token accounts in the menu (otherwise show an account switcher bar).";
-"pref.display.overview_providers.title" = "Overview tab providers";
-"pref.display.overview_providers.configure" = "Configure…";
-"pref.display.overview_providers.enable_merge" = "Enable Merge Icons to configure Overview tab providers.";
-"pref.display.overview_providers.none_available" = "No enabled providers available for Overview.";
-"pref.display.overview_providers.choose" = "Choose up to %lld providers";
-"pref.display.overview_providers.order_note" = "Overview rows always follow provider order.";
-"pref.display.overview_providers.none_selected" = "No providers selected";
-
-/* ===== Advanced Pane ===== */
-"pref.advanced.section.shortcut" = "Keyboard shortcut";
-"pref.advanced.open_menu.title" = "Open menu";
-"pref.advanced.open_menu.subtitle" = "Trigger the menu bar menu from anywhere.";
-"pref.advanced.install_cli" = "Install CLI";
-"pref.advanced.install_cli.subtitle" = "Symlink CodexBarCLI to /usr/local/bin and /opt/homebrew/bin as codexbar.";
-"pref.advanced.cli.not_found" = "CodexBarCLI not found in app bundle.";
-"pref.advanced.cli.no_write" = "No write access: %@";
-"pref.advanced.cli.exists" = "Exists: %@";
-"pref.advanced.cli.installed" = "Installed: %@";
-"pref.advanced.cli.failed" = "Failed: %@";
-"pref.advanced.cli.no_bin_dirs" = "No writable bin dirs found.";
-"pref.advanced.debug_settings.title" = "Show Debug Settings";
-"pref.advanced.debug_settings.subtitle" = "Expose troubleshooting tools in the Debug tab.";
-"pref.advanced.surprise.title" = "Surprise me";
-"pref.advanced.surprise.subtitle" = "Check if you like your agents having some fun up there.";
-"pref.advanced.confetti.title" = "Weekly limit confetti";
-"pref.advanced.confetti.subtitle" = "Play full-screen confetti when weekly usage resets.";
-"pref.advanced.hide_personal.title" = "Hide personal information";
-"pref.advanced.hide_personal.subtitle" = "Obscure email addresses in the menu bar and menu UI.";
-"pref.advanced.section.keychain" = "Keychain access";
-"pref.advanced.keychain.caption" = "Disable all Keychain reads and writes. Browser cookie import is unavailable; paste Cookie headers manually in Providers.";
-"pref.advanced.disable_keychain.title" = "Disable Keychain access";
-"pref.advanced.disable_keychain.subtitle" = "Prevents any Keychain access while enabled.";
-
-/* ===== About Pane ===== */
-"pref.about.version" = "Version %@";
-"pref.about.built" = "Built %@";
-"pref.about.tagline" = "May your tokens never run out—keep agent limits in view.";
-"pref.about.auto_update" = "Check for updates automatically";
-"pref.about.update_channel" = "Update Channel";
-"pref.about.check_updates" = "Check for Updates…";
-"pref.about.copyright" = "© 2026 Peter Steinberger. MIT License.";
-"pref.about.github" = "GitHub";
-"pref.about.website" = "Website";
-"pref.about.twitter" = "Twitter";
-"pref.about.email" = "Email";
-"pref.about.updates_unavailable" = "Updates unavailable in this build.";
-
-/* ===== Debug Pane ===== */
-"pref.debug.section.logging" = "Logging";
-"pref.debug.file_logging.title" = "Enable file logging";
-"pref.debug.file_logging.subtitle" = "Write logs to %@ for debugging.";
-"pref.debug.verbosity.title" = "Verbosity";
-"pref.debug.verbosity.subtitle" = "Controls how much detail is logged.";
-"pref.debug.open_log" = "Open log file";
-"pref.debug.force_animation.title" = "Force animation on next refresh";
-"pref.debug.force_animation.subtitle" = "Temporarily shows the loading animation after the next refresh.";
-"pref.debug.section.animations" = "Loading animations";
-"pref.debug.animations.caption" = "Pick a pattern and replay it in the menu bar. \"Random\" keeps the existing behavior.";
-"pref.debug.random_default" = "Random (default)";
-"pref.debug.replay_animation" = "Replay selected animation";
-"pref.debug.blink_now" = "Blink now";
-"pref.debug.section.probe_logs" = "Probe logs";
-"pref.debug.probe_logs.caption" = "Fetch the latest probe output for debugging; Copy keeps the full text.";
-"pref.debug.fetch_log" = "Fetch log";
-"pref.debug.copy" = "Copy";
-"pref.debug.save_to_file" = "Save to file";
-"pref.debug.load_parse_dump" = "Load parse dump";
-"pref.debug.rerun_autodetect" = "Re-run provider autodetect";
-"pref.debug.loading" = "Loading…";
-"pref.debug.no_log_yet" = "No log yet. Fetch to load.";
-"pref.debug.section.fetch_strategy" = "Fetch strategy attempts";
-"pref.debug.fetch_strategy.caption" = "Last fetch pipeline decisions and errors for a provider.";
-"pref.debug.no_fetch_attempts" = "No fetch attempts yet.";
-"pref.debug.section.openai_cookies" = "OpenAI cookies";
-"pref.debug.openai_cookies.caption" = "Cookie import + WebKit scrape logs from the last OpenAI cookies attempt.";
-"pref.debug.no_cookie_log" = "No log yet. Update OpenAI cookies in Providers → Codex to run an import.";
-"pref.debug.section.caches" = "Caches";
-"pref.debug.caches.caption" = "Clear cached cost scan results.";
-"pref.debug.clear_cost_cache" = "Clear cost cache";
-"pref.debug.cache_cleared" = "Cleared.";
-"pref.debug.cache_failed" = "Failed: %@";
-"pref.debug.section.notifications" = "Notifications";
-"pref.debug.notifications.caption" = "Trigger test notifications for the 5-hour session window (depleted/restored).";
-"pref.debug.post_depleted" = "Post depleted";
-"pref.debug.post_restored" = "Post restored";
-"pref.debug.section.cli_sessions" = "CLI sessions";
-"pref.debug.cli_sessions.caption" = "Keep Codex/Claude CLI sessions alive after a probe. Default exits once data is captured.";
-"pref.debug.keep_cli_alive.title" = "Keep CLI sessions alive";
-"pref.debug.keep_cli_alive.subtitle" = "Skip teardown between probes (debug-only).";
-"pref.debug.reset_cli_sessions" = "Reset CLI sessions";
-"pref.debug.section.error_simulation" = "Error simulation";
-"pref.debug.error_simulation.caption" = "Inject a fake error message into the menu card for layout testing.";
-"pref.debug.simulated_error_text" = "Simulated error text";
-"pref.debug.set_menu_error" = "Set menu error";
-"pref.debug.clear_menu_error" = "Clear menu error";
-"pref.debug.set_cost_error" = "Set cost error";
-"pref.debug.clear_cost_error" = "Clear cost error";
-"pref.debug.section.cli_paths" = "CLI paths";
-"pref.debug.cli_paths.caption" = "Resolved Codex binary and PATH layers; startup login PATH capture (short timeout).";
-"pref.debug.codex_binary" = "Codex binary";
-"pref.debug.claude_binary" = "Claude binary";
-"pref.debug.effective_path" = "Effective PATH";
-"pref.debug.path_unavailable" = "Unavailable";
-"pref.debug.login_shell_path" = "Login shell PATH (startup capture)";
-"pref.debug.not_found" = "Not found";
-
 /* ===== Menu Bar Items ===== */
 "menu.refresh" = "Refresh";
 "menu.overview" = "Overview";
@@ -347,43 +220,6 @@
 "Global Keychain access is disabled in Advanced, so this setting is currently inactive." = "Global Keychain access is disabled in Advanced, so this setting is currently inactive.";
 "Controls Claude OAuth Keychain prompts when the standard reader is active. Choosing \"Never prompt\" can make OAuth unavailable; use Web/CLI when needed." = "Controls Claude OAuth Keychain prompts when the standard reader is active. Choosing \"Never prompt\" can make OAuth unavailable; use Web/CLI when needed.";
 
-/* ===== Provider Detail View ===== */
-"provider.detail.state" = "State";
-"provider.detail.source" = "Source";
-"provider.detail.version" = "Version";
-"provider.detail.updated" = "Updated";
-"provider.detail.status" = "Status";
-"provider.detail.account" = "Account";
-"provider.detail.plan" = "Plan";
-"provider.detail.balance" = "Balance";
-"provider.detail.cost" = "Cost";
-"provider.detail.credits" = "Credits";
-"provider.detail.enabled" = "Enabled";
-"provider.detail.disabled" = "Disabled";
-"provider.detail.unavailable" = "Unavailable";
-"provider.detail.not_fetched" = "Not fetched yet";
-"provider.detail.refreshing" = "Refreshing";
-"provider.detail.not_detected" = "not detected";
-"provider.detail.usage_title" = "Usage";
-"provider.detail.settings_title" = "Settings";
-"provider.detail.options_title" = "Options";
-"provider.detail.last_fetch_failed" = "Last %@ fetch failed:";
-"provider.detail.no_usage_disabled" = "Disabled — no recent data";
-"provider.detail.no_usage_yet" = "No usage yet";
-"provider.detail.refresh_tooltip" = "Refresh";
-
-/* ===== Provider Settings ===== */
-"provider.settings.select" = "Select a provider";
-"provider.settings.cookie_source" = "Cookie source";
-"provider.settings.cookie_header" = "Cookie header";
-"provider.settings.automatic" = "Automatic";
-"provider.settings.manual" = "Manual";
-"provider.settings.manual_cookie_header" = "Manual cookie header";
-"provider.settings.auto_fallback" = "Auto falls back to the next source if the preferred one fails.";
-"provider.settings.auto_api_first" = "Auto uses API first, then falls back to CLI on auth failures.";
-"provider.settings.paste_cookie_claude" = "Paste a Cookie header from a claude.ai request.";
-"provider.settings.paste_cookie_chatgpt" = "Paste a Cookie header from a chatgpt.com request.";
-
 /* ===== Shared Option Labels ===== */
 "System Default" = "System Default";
 "English" = "English";
@@ -394,14 +230,6 @@
 "5 min" = "5 min";
 "15 min" = "15 min";
 "30 min" = "30 min";
-"provider.settings.paste_cookie_minimax" = "Paste a Cookie header or cURL capture from the Coding Plan page.";
-"provider.settings.auto_imports_claude" = "Automatic imports browser cookies for the web API.";
-"provider.settings.auto_imports_codex" = "Automatic imports browser cookies for dashboard extras.";
-"provider.settings.auto_imports_minimax" = "Automatic imports browser cookies and local storage tokens.";
-"provider.settings.sign_in_github" = "Sign in with GitHub";
-"provider.settings.sign_in_again" = "Sign in again";
-"provider.settings.sign_in_via_button" = "Sign in via button below";
-"provider.settings.api_region" = "API region";
 
 /* ===== Token Accounts ===== */
 "token.no_accounts" = "No token accounts yet.";
