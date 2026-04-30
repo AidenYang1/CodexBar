@@ -15,12 +15,18 @@ enum PreferencesTab: String, CaseIterable, Hashable {
 
     var title: String {
         switch self {
-        case .general: "General"
-        case .providers: "Providers"
-        case .display: "Display"
-        case .advanced: "Advanced"
-        case .about: "About"
-        case .debug: "Debug"
+        case .general:
+            NSLocalizedString("pref.tab.general", comment: "")
+        case .providers:
+            NSLocalizedString("pref.tab.providers", comment: "")
+        case .display:
+            NSLocalizedString("pref.tab.display", comment: "")
+        case .advanced:
+            NSLocalizedString("pref.tab.advanced", comment: "")
+        case .about:
+            NSLocalizedString("pref.tab.about", comment: "")
+        case .debug:
+            NSLocalizedString("pref.tab.debug", comment: "")
         }
     }
 
@@ -67,7 +73,7 @@ struct PreferencesView: View {
     var body: some View {
         TabView(selection: self.$selection.tab) {
             GeneralPane(settings: self.settings, store: self.store)
-                .tabItem { Label("General", systemImage: "gearshape") }
+                .tabItem { Label("pref.tab.general", systemImage: "gearshape") }
                 .tag(PreferencesTab.general)
 
             ProvidersPane(
@@ -75,24 +81,24 @@ struct PreferencesView: View {
                 store: self.store,
                 managedCodexAccountCoordinator: self.managedCodexAccountCoordinator,
                 codexAccountPromotionCoordinator: self.codexAccountPromotionCoordinator)
-                .tabItem { Label("Providers", systemImage: "square.grid.2x2") }
+                .tabItem { Label("pref.tab.providers", systemImage: "square.grid.2x2") }
                 .tag(PreferencesTab.providers)
 
             DisplayPane(settings: self.settings, store: self.store)
-                .tabItem { Label("Display", systemImage: "eye") }
+                .tabItem { Label("pref.tab.display", systemImage: "eye") }
                 .tag(PreferencesTab.display)
 
             AdvancedPane(settings: self.settings)
-                .tabItem { Label("Advanced", systemImage: "slider.horizontal.3") }
+                .tabItem { Label("pref.tab.advanced", systemImage: "slider.horizontal.3") }
                 .tag(PreferencesTab.advanced)
 
             AboutPane(updater: self.updater)
-                .tabItem { Label("About", systemImage: "info.circle") }
+                .tabItem { Label("pref.tab.about", systemImage: "info.circle") }
                 .tag(PreferencesTab.about)
 
             if self.settings.debugMenuEnabled {
                 DebugPane(settings: self.settings, store: self.store)
-                    .tabItem { Label("Debug", systemImage: "ladybug") }
+                    .tabItem { Label("pref.tab.debug", systemImage: "ladybug") }
                     .tag(PreferencesTab.debug)
             }
         }

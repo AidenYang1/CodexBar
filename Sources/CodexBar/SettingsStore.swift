@@ -28,12 +28,18 @@ enum RefreshFrequency: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .manual: "Manual"
-        case .oneMinute: "1 min"
-        case .twoMinutes: "2 min"
-        case .fiveMinutes: "5 min"
-        case .fifteenMinutes: "15 min"
-        case .thirtyMinutes: "30 min"
+        case .manual:
+            NSLocalizedString("Manual", comment: "")
+        case .oneMinute:
+            NSLocalizedString("1 min", comment: "")
+        case .twoMinutes:
+            NSLocalizedString("2 min", comment: "")
+        case .fiveMinutes:
+            NSLocalizedString("5 min", comment: "")
+        case .fifteenMinutes:
+            NSLocalizedString("15 min", comment: "")
+        case .thirtyMinutes:
+            NSLocalizedString("30 min", comment: "")
         }
     }
 }
@@ -52,12 +58,12 @@ enum MenuBarMetricPreference: String, CaseIterable, Identifiable {
 
     var label: String {
         switch self {
-        case .automatic: "Automatic"
-        case .primary: "Primary"
-        case .secondary: "Secondary"
-        case .tertiary: "Tertiary"
-        case .extraUsage: "Extra usage"
-        case .average: "Average"
+        case .automatic: localizedUI("Automatic")
+        case .primary: localizedUI("Primary")
+        case .secondary: localizedUI("Secondary")
+        case .tertiary: localizedUI("Tertiary")
+        case .extraUsage: localizedUI("Extra usage")
+        case .average: localizedUI("Average")
         }
     }
 }
@@ -210,6 +216,7 @@ extension SettingsStore {
         if refreshDefault == nil {
             userDefaults.set(refreshFrequency.rawValue, forKey: "refreshFrequency")
         }
+        let appLanguageRaw = Self.appLanguageFromDefaults(userDefaults).rawValue
         let launchAtLogin = userDefaults.object(forKey: "launchAtLogin") as? Bool ?? false
         let debugMenuEnabled = userDefaults.object(forKey: "debugMenuEnabled") as? Bool ?? false
         let debugDisableKeychainAccess: Bool = {
@@ -285,6 +292,7 @@ extension SettingsStore {
 
         return SettingsDefaultsState(
             refreshFrequency: refreshFrequency,
+            appLanguageRaw: appLanguageRaw,
             launchAtLogin: launchAtLogin,
             debugMenuEnabled: debugMenuEnabled,
             debugDisableKeychainAccess: debugDisableKeychainAccess,

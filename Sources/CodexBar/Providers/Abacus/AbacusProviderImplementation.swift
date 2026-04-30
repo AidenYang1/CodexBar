@@ -66,7 +66,7 @@ struct AbacusProviderImplementation: ProviderImplementation {
                 trailingText: {
                     guard let entry = CookieHeaderCache.load(provider: .abacus) else { return nil }
                     let when = entry.storedAt.relativeDescription()
-                    return "Cached: \(entry.sourceLabel) • \(when)"
+                    return localizedUIFormat("provider.cache.cached_at", entry.sourceLabel, when)
                 }),
         ]
     }

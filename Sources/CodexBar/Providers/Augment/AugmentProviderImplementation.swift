@@ -70,7 +70,7 @@ struct AugmentProviderImplementation: ProviderImplementation {
                 trailingText: {
                     guard let entry = CookieHeaderCache.load(provider: .augment) else { return nil }
                     let when = entry.storedAt.relativeDescription()
-                    return "Cached: \(entry.sourceLabel) • \(when)"
+                    return localizedUIFormat("provider.cache.cached_at", entry.sourceLabel, when)
                 }),
         ]
     }
@@ -83,14 +83,14 @@ struct AugmentProviderImplementation: ProviderImplementation {
 
     @MainActor
     func appendActionMenuEntries(context: ProviderMenuActionContext, entries: inout [ProviderMenuEntry]) {
-        entries.append(.action("Refresh Session", .refreshAugmentSession))
+        entries.append(.action(localizedUI("Refresh Session"), .refreshAugmentSession))
 
         if let error = context.store.error(for: .augment) {
             if error.contains("session has expired") ||
                 error.contains("No Augment session cookie found")
             {
                 entries.append(.action(
-                    "Open Augment (Log Out & Back In)",
+                    localizedUI("Open Augment (Log Out & Back In)"),
                     .loginToProvider(url: "https://app.augmentcode.com")))
             }
         }

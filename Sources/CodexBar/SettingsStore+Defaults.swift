@@ -2,7 +2,34 @@ import CodexBarCore
 import Foundation
 import ServiceManagement
 
+enum AppLanguage: String, CaseIterable, Identifiable {
+    case system
+    case english
+    case zhHans
+
+    var id: String { self.rawValue }
+
+    var label: String {
+        switch self {
+        case .system:
+            NSLocalizedString("System Default", comment: "")
+        case .english:
+            NSLocalizedString("English", comment: "")
+        case .zhHans:
+            NSLocalizedString("Simplified Chinese", comment: "")
+        }
+    }
+}
+
 extension SettingsStore {
+    static func appLanguageFromDefaults(_ userDefaults: UserDefaults) -> AppLanguage {
+        let langs = userDefaults.array(forKey: "AppleLanguages") as? [String]
+        guard let first = langs?.first else { return .system }
+        if first.hasPrefix("zh") { return .zhHans }
+        if first.hasPrefix("en") { return .english }
+        return .system
+    }
+
     private static let mergedOverviewSelectionEditedActiveProvidersKey = "mergedOverviewSelectionEditedActiveProviders"
 
     var refreshFrequency: RefreshFrequency {
@@ -521,6 +548,23 @@ extension SettingsStore {
             if let maxCount, normalized.count >= maxCount { break }
         }
         return normalized
+    }
+
+    var appLanguage: AppLanguage {
+        get {
+            AppLanguage(rawValue: self.defaultsState.appLanguageRaw) ?? Self.appLanguageFromDefaults(self.userDefaults)
+        }
+        set {
+            self.defaultsState.appLanguageRaw = newValue.rawValue
+            switch newValue {
+            case .system:
+                self.userDefaults.removeObject(forKey: "AppleLanguages")
+            case .english:
+                self.userDefaults.set(["en"], forKey: "AppleLanguages")
+            case .zhHans:
+                self.userDefaults.set(["zh-Hans", "en"], forKey: "AppleLanguages")
+            }
+        }
     }
 
     private static func decodeProviders(_ rawProviders: [String], maxCount: Int? = nil) -> [UsageProvider] {

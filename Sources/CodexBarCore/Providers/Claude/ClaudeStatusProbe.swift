@@ -33,11 +33,11 @@ public enum ClaudeStatusProbeError: LocalizedError, Sendable {
     public var errorDescription: String? {
         switch self {
         case .claudeNotInstalled:
-            "Claude CLI is not installed or not on PATH."
+            NSLocalizedString("error.claude.cli_not_installed", comment: "")
         case let .parseFailed(msg):
-            "Could not parse Claude usage: \(msg)"
+            String(format: NSLocalizedString("error.claude.parse_failed", comment: ""), msg)
         case .timedOut:
-            "Claude usage probe timed out."
+            NSLocalizedString("error.claude.timed_out", comment: "")
         }
     }
 }
@@ -421,33 +421,30 @@ public struct ClaudeStatusProbe: Sendable {
                 return trimmed.isEmpty ? nil : trimmed
             }
             if let folderHint {
-                return """
-                Claude CLI is waiting for a folder trust prompt (\(folderHint)). CodexBar tries to auto-accept this, \
-                but if it keeps appearing run: `cd "\(folderHint)" && claude` and choose “Yes, proceed”, then retry.
-                """
+                return String(
+                    format: NSLocalizedString("error.claude.folder_trust_prompt.with_folder", comment: ""),
+                    folderHint,
+                    folderHint)
             }
-            return """
-            Claude CLI is waiting for a folder trust prompt. CodexBar tries to auto-accept this, but if it keeps \
-            appearing open `claude` once, choose “Yes, proceed”, then retry.
-            """
+            return NSLocalizedString("error.claude.folder_trust_prompt", comment: "")
         }
         if lower.contains("token_expired") || lower.contains("token has expired") {
-            return "Claude CLI token expired. Run `claude login` to refresh."
+            return NSLocalizedString("error.claude.token_expired", comment: "")
         }
         if lower.contains("authentication_error") {
-            return "Claude CLI authentication error. Run `claude login`."
+            return NSLocalizedString("error.claude.authentication_error", comment: "")
         }
         if lower.contains("rate_limit_error")
             || lower.contains("rate limited")
             || compact.contains("ratelimited")
         {
-            return "Claude CLI usage endpoint is rate limited right now. Please try again later."
+            return NSLocalizedString("error.claude.rate_limited", comment: "")
         }
         if lower.contains("failed to load usage data") {
-            return "Claude CLI could not load usage data. Open the CLI and retry `/usage`."
+            return NSLocalizedString("error.claude.could_not_load_usage", comment: "")
         }
         if compact.contains("failedtoloadusagedata") {
-            return "Claude CLI could not load usage data. Open the CLI and retry `/usage`."
+            return NSLocalizedString("error.claude.could_not_load_usage", comment: "")
         }
         return nil
     }
@@ -754,7 +751,7 @@ public struct ClaudeStatusProbe: Sendable {
         let type = (error["type"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
 
         if type == "rate_limit_error" {
-            return "Claude CLI usage endpoint is rate limited right now. Please try again later."
+            return NSLocalizedString("error.claude.rate_limited", comment: "")
         }
 
         var parts: [String] = []
@@ -765,9 +762,9 @@ public struct ClaudeStatusProbe: Sendable {
         let hint = parts.joined(separator: " ")
 
         if let code, code.lowercased().contains("token") {
-            return "\(hint). Run `claude login` to refresh."
+            return String(format: NSLocalizedString("error.claude.error_with_login_hint", comment: ""), hint)
         }
-        return "Claude CLI error: \(hint)"
+        return String(format: NSLocalizedString("error.claude.generic_error", comment: ""), hint)
     }
 
     // MARK: - Process helpers

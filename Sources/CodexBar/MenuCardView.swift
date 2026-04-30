@@ -4,6 +4,10 @@ import SwiftUI
 
 /// SwiftUI card used inside the NSMenu to mirror Apple's rich menu panels.
 struct UsageMenuCardView: View {
+    private static func localizedMetricTitle(_ title: String) -> String {
+        NSLocalizedString(title, comment: "")
+    }
+
     struct Model {
         enum PercentStyle: String {
             case left
@@ -11,8 +15,8 @@ struct UsageMenuCardView: View {
 
             var labelSuffix: String {
                 switch self {
-                case .left: "left"
-                case .used: "used"
+                case .left: NSLocalizedString("usage.percent.left", comment: "")
+                case .used: NSLocalizedString("usage.percent.used", comment: "")
                 }
             }
 
@@ -112,9 +116,9 @@ struct UsageMenuCardView: View {
 
     static func popupMetricTitle(provider: UsageProvider, metric: Model.Metric) -> String {
         if provider == .openrouter, metric.id == "primary" {
-            return "API key limit"
+            return NSLocalizedString("API key limit", comment: "")
         }
-        return metric.title
+        return Self.localizedMetricTitle(metric.title)
     }
 
     var body: some View {
@@ -177,7 +181,7 @@ struct UsageMenuCardView: View {
                     }
                     if let tokenUsage = self.model.tokenUsage {
                         VStack(alignment: .leading, spacing: 6) {
-                            Text("Cost")
+                            Text(localizedUI("Cost"))
                                 .font(.body)
                                 .fontWeight(.medium)
                             Text(tokenUsage.sessionLine)
@@ -310,7 +314,7 @@ private struct CopyIconButton: View {
                 .frame(width: 18, height: 18)
         }
         .buttonStyle(CopyIconButtonStyle(isHighlighted: self.isHighlighted))
-        .accessibilityLabel(self.didCopy ? "Copied" : "Copy error")
+        .accessibilityLabel(localizedUI(self.didCopy ? "Copied" : "Copy error"))
     }
 
     private func copyToPasteboard() {
@@ -333,12 +337,12 @@ private struct ProviderCostContent: View {
             UsageProgressBar(
                 percent: self.section.percentUsed,
                 tint: self.progressColor,
-                accessibilityLabel: "Extra usage spent")
+                accessibilityLabel: localizedUI("Extra usage spent"))
             HStack(alignment: .firstTextBaseline) {
                 Text(self.section.spendLine)
                     .font(.footnote)
                 Spacer()
-                Text(String(format: "%.0f%% used", min(100, max(0, self.section.percentUsed))))
+                Text(localizedUIFormat("%.0f%% used", min(100, max(0, self.section.percentUsed))))
                     .font(.footnote)
                     .foregroundStyle(MenuHighlightStyle.secondary(self.isHighlighted))
             }
@@ -420,7 +424,7 @@ private struct UsageNotesContent: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             ForEach(Array(self.notes.enumerated()), id: \.offset) { _, note in
-                Text(note)
+                Text(localizedUI(note))
                     .font(.footnote)
                     .foregroundStyle(MenuHighlightStyle.secondary(self.isHighlighted))
                     .lineLimit(2)
@@ -464,7 +468,7 @@ struct UsageMenuCardUsageSectionView: View {
                 if !self.model.usageNotes.isEmpty {
                     UsageNotesContent(notes: self.model.usageNotes)
                 } else if let placeholder = self.model.placeholder {
-                    Text(placeholder)
+                    Text(localizedUI(placeholder))
                         .foregroundStyle(MenuHighlightStyle.secondary(self.isHighlighted))
                         .font(.subheadline)
                 }
@@ -542,18 +546,19 @@ private struct CreditsBarContent: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Credits")
+                .help(localizedUI("Credits"))
                 .font(.body)
                 .fontWeight(.medium)
             if let percentLeft {
                 UsageProgressBar(
                     percent: percentLeft,
                     tint: self.progressColor,
-                    accessibilityLabel: "Credits remaining")
+                    accessibilityLabel: localizedUI("Credits remaining"))
                 HStack(alignment: .firstTextBaseline) {
                     Text(self.creditsText)
                         .font(.caption)
                     Spacer()
-                    Text(self.scaleText)
+                    Text(localizedUIFormat("%@ tokens", self.scaleText.replacingOccurrences(of: " tokens", with: "")))
                         .font(.caption)
                         .foregroundStyle(MenuHighlightStyle.secondary(self.isHighlighted))
                 }
@@ -589,7 +594,7 @@ struct UsageMenuCardCostSectionView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     if let tokenUsage = self.model.tokenUsage {
                         VStack(alignment: .leading, spacing: 6) {
-                            Text("Cost")
+                            Text(localizedUI("Cost"))
                                 .font(.body)
                                 .fontWeight(.medium)
                             Text(tokenUsage.sessionLine)
@@ -1379,20 +1384,20 @@ extension UsageMenuCardView.Model {
         else { return nil }
 
         let countdown = UsageFormatter.resetCountdownDescription(from: resetsAt, now: now)
-        let resetText = "Regenerates \(countdown)"
+        let resetText = localizedUIFormat("usage.synthetic.regenerates", countdown)
 
         let nextRegenPercent = (nextRegenAmount / cost.limit) * 100
         let afterNextRegenRemaining = min(100, weekly.remainingPercent + nextRegenPercent)
         let afterNextRegen = showUsed ? max(0, 100 - afterNextRegenRemaining) : afterNextRegenRemaining
-        let suffix = showUsed ? "used after next regen" : "after next regen"
+        let suffix = localizedUI(showUsed ? "used after next regen" : "after next regen")
         let ticksToFull = max(0, cost.used) / nextRegenAmount
         let left = String(format: "%.0f%% %@", afterNextRegen, suffix)
         let right = if ticksToFull <= 0.1 {
-            "Near full"
+            localizedUI("Near full")
         } else if ticksToFull < 1.5 {
-            "Full in ~1 regen"
+            localizedUI("Full in ~1 regen")
         } else {
-            String(format: "Full in ~%.0f regens", ceil(ticksToFull))
+            localizedUIFormat("Full in ~%.0f regens", ceil(ticksToFull))
         }
         return (resetText, PaceDetail(leftLabel: left, rightLabel: right, pacePercent: nil, paceOnTop: true))
     }
@@ -1408,21 +1413,21 @@ extension UsageMenuCardView.Model {
         else { return nil }
 
         let countdown = UsageFormatter.resetCountdownDescription(from: resetsAt, now: now)
-        let resetText = "Regenerates \(countdown)"
+        let resetText = localizedUIFormat("usage.synthetic.regenerates", countdown)
 
         let afterNextRegenRemaining = min(100, window.remainingPercent + nextRegenPercent)
         let afterNextRegen = showUsed ? max(0, 100 - afterNextRegenRemaining) : afterNextRegenRemaining
-        let suffix = showUsed ? "used after next regen" : "after next regen"
+        let suffix = localizedUI(showUsed ? "used after next regen" : "after next regen")
         let left = String(format: "%.0f%% %@", afterNextRegen, suffix)
 
         let missingPercent = max(0, window.usedPercent)
         let ticksToFull = missingPercent / nextRegenPercent
         let right = if ticksToFull <= 0.1 {
-            "Near full"
+            localizedUI("Near full")
         } else if ticksToFull < 1.5 {
-            "Full in ~1 regen"
+            localizedUI("Full in ~1 regen")
         } else {
-            String(format: "Full in ~%.0f regens", ceil(ticksToFull))
+            localizedUIFormat("Full in ~%.0f regens", ceil(ticksToFull))
         }
 
         return (resetText, PaceDetail(leftLabel: left, rightLabel: right, pacePercent: nil, paceOnTop: true))
@@ -1462,9 +1467,9 @@ extension UsageMenuCardView.Model {
         let sessionTokens = snapshot.sessionTokens.map { UsageFormatter.tokenCountString($0) }
         let sessionLine: String = {
             if let sessionTokens {
-                return "Today: \(sessionCost) · \(sessionTokens) tokens"
+                return localizedUIFormat("usage.cost.today_tokens", sessionCost, sessionTokens)
             }
-            return "Today: \(sessionCost)"
+            return localizedUIFormat("usage.cost.today", sessionCost)
         }()
 
         let monthCost = snapshot.last30DaysCostUSD.map { UsageFormatter.usdString($0) } ?? "—"
@@ -1473,9 +1478,9 @@ extension UsageMenuCardView.Model {
         let monthTokens = monthTokensValue.map { UsageFormatter.tokenCountString($0) }
         let monthLine: String = {
             if let monthTokens {
-                return "Last 30 days: \(monthCost) · \(monthTokens) tokens"
+                return localizedUIFormat("usage.cost.last_30_days_tokens", monthCost, monthTokens)
             }
-            return "Last 30 days: \(monthCost)"
+            return localizedUIFormat("usage.cost.last_30_days", monthCost)
         }()
         let err = (error?.isEmpty ?? true) ? nil : error
         return TokenUsageSection(
@@ -1499,17 +1504,17 @@ extension UsageMenuCardView.Model {
         let title: String
 
         if cost.currencyCode == "Quota" {
-            title = "Quota usage"
+            title = localizedUI("Quota usage")
             used = String(format: "%.0f", cost.used)
             limit = String(format: "%.0f", cost.limit)
         } else {
-            title = "Extra usage"
+            title = localizedUI("Extra usage")
             used = UsageFormatter.currencyString(cost.used, currencyCode: cost.currencyCode)
             limit = UsageFormatter.currencyString(cost.limit, currencyCode: cost.currencyCode)
         }
 
         let percentUsed = Self.clamped((cost.used / cost.limit) * 100)
-        let periodLabel = cost.period ?? "This month"
+        let periodLabel = localizedUI(cost.period ?? "This month")
 
         return ProviderCostSection(
             title: title,

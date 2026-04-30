@@ -49,9 +49,13 @@ final class SessionQuotaNotifier: SessionQuotaNotifying {
         case .none:
             ("", "")
         case .depleted:
-            ("\(providerName) session depleted", "0% left. Will notify when it's available again.")
+            (
+                localizedUIFormat("notification.session.depleted.title", providerName),
+                localizedUI("notification.session.depleted.body"))
         case .restored:
-            ("\(providerName) session restored", "Session quota is available again.")
+            (
+                localizedUIFormat("notification.session.restored.title", providerName),
+                localizedUI("notification.session.restored.body"))
         }
 
         let providerText = provider.rawValue

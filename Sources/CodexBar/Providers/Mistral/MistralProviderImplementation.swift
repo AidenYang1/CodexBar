@@ -71,7 +71,7 @@ struct MistralProviderImplementation: ProviderImplementation {
                 trailingText: {
                     guard let entry = CookieHeaderCache.load(provider: .mistral) else { return nil }
                     let when = entry.storedAt.relativeDescription()
-                    return "Cached: \(entry.sourceLabel) • \(when)"
+                    return localizedUIFormat("provider.cache.cached_at", entry.sourceLabel, when)
                 }),
         ]
     }

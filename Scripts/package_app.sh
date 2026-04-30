@@ -269,6 +269,8 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>CFBundlePackageType</key><string>APPL</string>
     <key>CFBundleShortVersionString</key><string>${MARKETING_VERSION}</string>
     <key>CFBundleVersion</key><string>${BUILD_NUMBER}</string>
+    <key>CFBundleDevelopmentRegion</key><string>en</string>
+    <key>CFBundleLocalizations</key><array><string>en</string><string>zh-Hans</string></array>
     <key>LSMinimumSystemVersion</key><string>14.0</string>
     <key>LSUIElement</key><true/>
     <key>CFBundleIconFile</key><string>Icon</string>
@@ -304,6 +306,20 @@ resolve_binary_path() {
   fi
   if [[ "$arch" == "arm64" || "$arch" == "x86_64" ]] && [[ -f ".build/$CONF/$name" ]]; then
     echo ".build/$CONF/$name"
+  fi
+}
+
+resolve_framework_path() {
+  local name="$1"
+  local arch="$2"
+  local candidate
+  candidate=$(build_product_path "$name.framework" "$arch")
+  if [[ -d "$candidate" ]]; then
+    echo "$candidate"
+    return
+  fi
+  if [[ "$arch" == "arm64" || "$arch" == "x86_64" ]] && [[ -d ".build/$CONF/$name.framework" ]]; then
+    echo ".build/$CONF/$name.framework"
   fi
 }
 
@@ -386,13 +402,7 @@ PLIST
   install_binary "CodexBarWidget" "$WIDGET_APP/Contents/MacOS/CodexBarWidget"
   generate_widget_appintents_metadata "$WIDGET_APP/Contents/Resources"
 fi
-# Embed Sparkle.framework
-if [[ -d ".build/$CONF/Sparkle.framework" ]]; then
-  cp -R ".build/$CONF/Sparkle.framework" "$APP/Contents/Frameworks/"
-  chmod -R a+rX "$APP/Contents/Frameworks/Sparkle.framework"
-  install_name_tool -add_rpath "@executable_path/../Frameworks" "$APP/Contents/MacOS/CodexBar"
-  # Re-sign Sparkle and all nested components with Developer ID + timestamp
-  SPARKLE="$APP/Contents/Frameworks/Sparkle.framework"
+
 if [[ "$SIGNING_MODE" == "adhoc" ]]; then
   CODESIGN_ID="-"
   CODESIGN_ARGS=(--force --sign "$CODESIGN_ID")
@@ -403,7 +413,16 @@ else
   CODESIGN_ID="${APP_IDENTITY:-Developer ID Application: Peter Steinberger (Y5PE65HELJ)}"
   CODESIGN_ARGS=(--force --timestamp --options runtime --sign "$CODESIGN_ID")
 fi
-function resign() { codesign "${CODESIGN_ARGS[@]}" "$1"; }
+
+# Embed Sparkle.framework
+SPARKLE_SOURCE="$(resolve_framework_path "Sparkle" "${ARCH_LIST[0]}")"
+if [[ -n "${SPARKLE_SOURCE:-}" && -d "$SPARKLE_SOURCE" ]]; then
+  cp -R "$SPARKLE_SOURCE" "$APP/Contents/Frameworks/"
+  chmod -R a+rX "$APP/Contents/Frameworks/Sparkle.framework"
+  install_name_tool -add_rpath "@executable_path/../Frameworks" "$APP/Contents/MacOS/CodexBar"
+  # Re-sign Sparkle and all nested components with Developer ID + timestamp
+  SPARKLE="$APP/Contents/Frameworks/Sparkle.framework"
+  function resign() { codesign "${CODESIGN_ARGS[@]}" "$1"; }
   # Sign innermost binaries first, then the framework root to seal resources
   resign "$SPARKLE"
   resign "$SPARKLE/Versions/B/Sparkle"
@@ -421,14 +440,24 @@ fi
 if [[ -f "$ICON_TARGET" ]]; then
   cp "$ICON_TARGET" "$APP/Contents/Resources/Icon.icns"
 fi
+if [[ -f "$ROOT/Sources/CodexBar/Resources/Icon-classic.icns" ]]; then
+  cp "$ROOT/Sources/CodexBar/Resources/Icon-classic.icns" "$APP/Contents/Resources/Icon-classic.icns"
+fi
 
 # Bundle app resources (provider icons, etc.).
 APP_RESOURCES_DIR="$ROOT/Sources/CodexBar/Resources"
 if [[ -d "$APP_RESOURCES_DIR" ]]; then
   cp -R "$APP_RESOURCES_DIR/." "$APP/Contents/Resources/"
 fi
+if [[ -f "$ICON_TARGET" ]]; then
+  cp "$ICON_TARGET" "$APP/Contents/Resources/Icon.icns"
+fi
 if [[ ! -f "$APP/Contents/Resources/Icon-classic.icns" ]]; then
   echo "ERROR: Missing Icon-classic.icns in app bundle resources." >&2
+  exit 1
+fi
+if [[ ! -f "$APP/Contents/Resources/Icon.icns" ]]; then
+  echo "ERROR: Missing Icon.icns in app bundle resources." >&2
   exit 1
 fi
 

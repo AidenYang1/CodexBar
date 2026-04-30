@@ -582,13 +582,13 @@ struct PlanUtilizationHistoryChartMenuView: View {
     {
         switch name {
         case .session:
-            metadata?.sessionLabel ?? "Session"
+            localizedUI(metadata?.sessionLabel ?? "Session")
         case .weekly:
-            metadata?.weeklyLabel ?? "Weekly"
+            localizedUI(metadata?.weeklyLabel ?? "Weekly")
         case .opus:
-            metadata?.opusLabel ?? "Opus"
+            localizedUI(metadata?.opusLabel ?? "Opus")
         default:
-            self.fallbackTitle(for: name.rawValue)
+            localizedUI(self.fallbackTitle(for: name.rawValue))
         }
     }
 
@@ -614,9 +614,9 @@ struct PlanUtilizationHistoryChartMenuView: View {
 
     private nonisolated static func emptyStateText(title: String?) -> String {
         if let title {
-            return "No \(title.lowercased()) utilization data yet."
+            return localizedUIFormat("history.empty_state.for_title", title.lowercased())
         }
-        return "No utilization data yet."
+        return localizedUI("history.empty_state")
     }
 
     #if DEBUG
@@ -780,19 +780,17 @@ extension PlanUtilizationHistoryChartMenuView {
 
         let used = max(0, min(100, point.usedPercent))
         if !point.isObserved {
-            return "\(dateLabel): -"
+            return localizedUIFormat("history.detail_line.unobserved", dateLabel)
         }
         let usedText = used.formatted(.number.precision(.fractionLength(0...1)))
-        return "\(dateLabel): \(usedText)% used"
+        return localizedUIFormat("history.detail_line.used", dateLabel, usedText)
     }
 
     private nonisolated static func detailDateLabel(for date: Date, windowMinutes: Int) -> String {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.locale = Locale.autoupdatingCurrent
         formatter.timeZone = TimeZone.current
-        formatter.amSymbol = "am"
-        formatter.pmSymbol = "pm"
-        formatter.dateFormat = "MMM d, h:mm a"
+        formatter.setLocalizedDateFormatFromTemplate(windowMinutes <= 300 ? "MMM d HH:mm" : "MMM d HH:mm")
         return formatter.string(from: date)
     }
 }

@@ -64,7 +64,7 @@ struct ProviderDetailView<SupplementaryContent: View>: View {
             return nil
         }
         guard provider == .openrouter else {
-            return (label: "Plan", value: rawPlan)
+            return (label: localizedUI("Plan"), value: rawPlan)
         }
 
         let prefix = "Balance:"
@@ -72,10 +72,10 @@ struct ProviderDetailView<SupplementaryContent: View>: View {
             let valueStart = rawPlan.index(rawPlan.startIndex, offsetBy: prefix.count)
             let trimmedValue = rawPlan[valueStart...].trimmingCharacters(in: .whitespacesAndNewlines)
             if !trimmedValue.isEmpty {
-                return (label: "Balance", value: trimmedValue)
+                return (label: localizedUI("Balance"), value: trimmedValue)
             }
         }
-        return (label: "Balance", value: rawPlan)
+        return (label: localizedUI("Balance"), value: rawPlan)
     }
 
     var body: some View {
@@ -99,7 +99,7 @@ struct ProviderDetailView<SupplementaryContent: View>: View {
 
                 if let errorDisplay {
                     ProviderErrorView(
-                        title: "Last \(self.store.metadata(for: self.provider).displayName) fetch failed:",
+                        title: localizedUIFormat("Last %@ fetch failed:", self.store.metadata(for: self.provider).displayName),
                         display: errorDisplay,
                         isExpanded: self.$isErrorExpanded,
                         onCopy: { self.onCopyError(errorDisplay.full) })
@@ -147,12 +147,12 @@ struct ProviderDetailView<SupplementaryContent: View>: View {
     }
 
     private var detailLabelWidth: CGFloat {
-        var infoLabels = ["State", "Source", "Version", "Updated"]
+        var infoLabels = ["State", "Source", "Version", "Updated"].map(localizedUI)
         if self.store.status(for: self.provider) != nil {
-            infoLabels.append("Status")
+            infoLabels.append(localizedUI("Status"))
         }
         if !self.model.email.isEmpty {
-            infoLabels.append("Account")
+            infoLabels.append(localizedUI("Account"))
         }
         if let planRow = Self.planRow(provider: self.provider, planText: self.model.planText) {
             infoLabels.append(planRow.label)
@@ -162,13 +162,13 @@ struct ProviderDetailView<SupplementaryContent: View>: View {
             Self.metricTitle(provider: self.provider, metric: metric)
         }
         if self.model.creditsText != nil {
-            metricLabels.append("Credits")
+            metricLabels.append(localizedUI("Credits"))
         }
         if let providerCost = self.model.providerCost {
             metricLabels.append(providerCost.title)
         }
         if self.model.tokenUsage != nil {
-            metricLabels.append("Cost")
+            metricLabels.append(localizedUI("Cost"))
         }
 
         let infoWidth = ProviderSettingsMetrics.labelWidth(
@@ -214,7 +214,7 @@ private struct ProviderDetailHeaderView: View {
                 }
                 .buttonStyle(.bordered)
                 .controlSize(.small)
-                .help("Refresh")
+                .help(localizedUI("Refresh"))
 
                 Toggle("", isOn: self.$isEnabled)
                     .labelsHidden()
@@ -274,26 +274,26 @@ private struct ProviderDetailInfoGrid: View {
     var body: some View {
         let status = self.store.status(for: self.provider)
         let source = self.store.sourceLabel(for: self.provider)
-        let version = self.store.version(for: self.provider) ?? "not detected"
+        let version = localizedUI(self.store.version(for: self.provider) ?? "not detected")
         let updated = self.updatedText
         let email = self.model.email
-        let enabledText = self.isEnabled ? "Enabled" : "Disabled"
+        let enabledText = localizedUI(self.isEnabled ? "Enabled" : "Disabled")
 
         Grid(alignment: .leading, horizontalSpacing: 12, verticalSpacing: 6) {
-            ProviderDetailInfoRow(label: "State", value: enabledText, labelWidth: self.labelWidth)
-            ProviderDetailInfoRow(label: "Source", value: source, labelWidth: self.labelWidth)
-            ProviderDetailInfoRow(label: "Version", value: version, labelWidth: self.labelWidth)
-            ProviderDetailInfoRow(label: "Updated", value: updated, labelWidth: self.labelWidth)
+            ProviderDetailInfoRow(label: localizedUI("State"), value: source.isEmpty ? enabledText : enabledText, labelWidth: self.labelWidth)
+            ProviderDetailInfoRow(label: localizedUI("Source"), value: localizedUI(source), labelWidth: self.labelWidth)
+            ProviderDetailInfoRow(label: localizedUI("Version"), value: version, labelWidth: self.labelWidth)
+            ProviderDetailInfoRow(label: localizedUI("Updated"), value: updated, labelWidth: self.labelWidth)
 
             if let status {
                 ProviderDetailInfoRow(
-                    label: "Status",
-                    value: status.description ?? status.indicator.label,
+                    label: localizedUI("Status"),
+                    value: localizedUI(status.description ?? status.indicator.label),
                     labelWidth: self.labelWidth)
             }
 
             if !email.isEmpty {
-                ProviderDetailInfoRow(label: "Account", value: email, labelWidth: self.labelWidth)
+                ProviderDetailInfoRow(label: localizedUI("Account"), value: email, labelWidth: self.labelWidth)
             }
 
             if let planRow = ProviderDetailView<EmptyView>.planRow(
@@ -312,12 +312,12 @@ private struct ProviderDetailInfoGrid: View {
             return UsageFormatter.updatedString(from: updated)
         }
         if self.store.refreshingProviders.contains(self.provider) {
-            return "Refreshing"
+            return localizedUI("Refreshing")
         }
         if self.store.unavailableMessage(for: self.provider) != nil {
-            return "Unavailable"
+            return localizedUI("Unavailable")
         }
-        return "Not fetched yet"
+        return localizedUI("Not fetched yet")
     }
 }
 
@@ -356,7 +356,7 @@ struct ProviderMetricsInlineView: View {
             horizontalPadding: 0)
         {
             if !hasMetrics, !hasUsageNotes, !hasProviderCost, !hasCredits, !hasTokenUsage {
-                Text(self.placeholderText)
+                Text(localizedUI(self.placeholderText))
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             } else {
@@ -377,7 +377,7 @@ struct ProviderMetricsInlineView: View {
 
                 if let credits = self.model.creditsText {
                     ProviderMetricInlineTextRow(
-                        title: "Credits",
+                        title: localizedUI("Credits"),
                         value: credits,
                         labelWidth: self.labelWidth)
                 }
@@ -391,7 +391,7 @@ struct ProviderMetricsInlineView: View {
 
                 if let tokenUsage = self.model.tokenUsage {
                     ProviderMetricInlineTextRow(
-                        title: "Cost",
+                        title: localizedUI("Cost"),
                         value: tokenUsage.sessionLine,
                         labelWidth: self.labelWidth)
                     ProviderMetricInlineTextRow(
@@ -405,9 +405,9 @@ struct ProviderMetricsInlineView: View {
 
     private var placeholderText: String {
         if !self.isEnabled {
-            return "Disabled — no recent data"
+            return localizedUI("Disabled — no recent data")
         }
-        return self.model.placeholder ?? "No usage yet"
+        return self.model.placeholder ?? localizedUI("No usage yet")
     }
 }
 
@@ -494,7 +494,7 @@ private struct ProviderUsageNotesInlineView: View {
             }
             VStack(alignment: .leading, spacing: 4) {
                 ForEach(Array(self.notes.enumerated()), id: \.offset) { _, note in
-                    Text(note)
+                    Text(localizedUI(note))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .lineLimit(2)
@@ -515,6 +515,7 @@ private struct ProviderMetricInlineTextRow: View {
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 12) {
             Text(self.title)
+                .help(localizedUI(self.title))
                 .font(.subheadline.weight(.semibold))
                 .frame(width: self.labelWidth, alignment: .leading)
 
@@ -543,11 +544,11 @@ private struct ProviderMetricInlineCostRow: View {
                 UsageProgressBar(
                     percent: self.section.percentUsed,
                     tint: self.progressColor,
-                    accessibilityLabel: "Usage used")
+                    accessibilityLabel: localizedUI("Usage used"))
                     .frame(minWidth: ProviderSettingsMetrics.metricBarWidth, maxWidth: .infinity)
 
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Text(String(format: "%.0f%% used", self.section.percentUsed))
+                    Text(localizedUIFormat("%.0f%% used", self.section.percentUsed))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                         .monospacedDigit()

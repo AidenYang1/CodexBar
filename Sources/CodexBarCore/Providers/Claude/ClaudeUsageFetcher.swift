@@ -51,9 +51,9 @@ public enum ClaudeUsageError: LocalizedError, Sendable {
     public var errorDescription: String? {
         switch self {
         case .claudeNotInstalled:
-            "Claude CLI is not installed. Install it from https://code.claude.com/docs/en/overview."
+            NSLocalizedString("error.claude.not_installed", comment: "")
         case let .parseFailed(details):
-            "Could not parse Claude usage: \(details)"
+            String(format: NSLocalizedString("error.claude.parse_failed", comment: ""), details)
         case let .oauthFailed(details):
             details
         }
@@ -178,15 +178,14 @@ public struct ClaudeUsageFetcher: ClaudeUsageFetching, Sendable {
     {
         guard policy.isApplicable else { return }
         if policy.mode == .never {
-            throw ClaudeUsageError.oauthFailed("Delegated refresh is disabled by 'never' keychain policy.")
+            throw ClaudeUsageError.oauthFailed(NSLocalizedString("error.claude.delegated_refresh_disabled", comment: ""))
         }
         if policy.mode == .onlyOnUserAction,
            policy.interaction != .userInitiated,
            !allowBackgroundDelegatedRefresh
         {
             throw ClaudeUsageError.oauthFailed(
-                "Claude OAuth token expired, but background repair is suppressed when Keychain prompt policy "
-                    + "is set to only prompt on user action. Open the CodexBar menu or click Refresh to retry.")
+                NSLocalizedString("error.claude.oauth_background_repair_suppressed", comment: ""))
         }
     }
 
@@ -310,8 +309,7 @@ public struct ClaudeUsageFetcher: ClaudeUsageFetching, Sendable {
         private func loadAfterDelegatedRefresh(allowDelegatedRetry: Bool) async throws -> ClaudeUsageSnapshot {
             guard allowDelegatedRetry else {
                 throw ClaudeUsageError.oauthFailed(
-                    "Claude OAuth token expired and delegated Claude CLI refresh did not recover. "
-                        + "Run `claude login`, then retry.")
+                    NSLocalizedString("error.claude.delegated_refresh_did_not_recover", comment: ""))
             }
 
             try Task.checkCancellation()
@@ -334,8 +332,9 @@ public struct ClaudeUsageFetcher: ClaudeUsageFetching, Sendable {
                     switch delegatedOutcome {
                     case .skippedByCooldown, .cliUnavailable:
                         throw ClaudeUsageError.oauthFailed(
-                            "Claude OAuth token expired; delegated refresh is unavailable (outcome="
-                                + "\(ClaudeUsageFetcher.delegatedRefreshOutcomeLabel(delegatedOutcome))).")
+                            String(
+                                format: NSLocalizedString("error.claude.delegated_refresh_unavailable", comment: ""),
+                                ClaudeUsageFetcher.delegatedRefreshOutcomeLabel(delegatedOutcome)))
                     case .attemptedSucceeded, .attemptedFailed:
                         break
                     }
@@ -773,17 +772,15 @@ extension ClaudeUsageFetcher {
         _ = retryError
         switch outcome {
         case .skippedByCooldown:
-            return "Claude OAuth token expired and delegated refresh is cooling down. "
-                + "Please retry shortly, or run `claude login`."
+            return NSLocalizedString("error.claude.delegated_refresh_cooling_down", comment: "")
         case .cliUnavailable:
-            return "Claude OAuth token expired and Claude CLI is not available for delegated refresh. "
-                + "Install/configure `claude`, or run `claude login`."
+            return NSLocalizedString("error.claude.delegated_refresh_cli_unavailable", comment: "")
         case .attemptedSucceeded:
-            return "Claude OAuth token is still unavailable after delegated Claude CLI refresh. "
-                + "Run `claude login`, then retry."
+            return NSLocalizedString("error.claude.delegated_refresh_still_unavailable", comment: "")
         case let .attemptedFailed(message):
-            return "Claude OAuth token expired and delegated Claude CLI refresh failed: \(message). "
-                + "Run `claude login`, then retry."
+            return String(
+                format: NSLocalizedString("error.claude.delegated_refresh_failed", comment: ""),
+                message)
         }
     }
 

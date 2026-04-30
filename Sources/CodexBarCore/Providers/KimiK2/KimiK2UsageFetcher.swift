@@ -41,7 +41,9 @@ public struct KimiK2UsageSummary: Sendable {
             usedPercent: usedPercent,
             windowMinutes: nil,
             resetsAt: nil,
-            resetDescription: total > 0 ? "Credits: \(usedText)/\(totalText)" : nil)
+            resetDescription: total > 0
+                ? String(format: NSLocalizedString("usage.credits.compact", comment: ""), usedText, totalText)
+                : nil)
         let identity = ProviderIdentitySnapshot(
             providerID: .kimik2,
             accountEmail: nil,

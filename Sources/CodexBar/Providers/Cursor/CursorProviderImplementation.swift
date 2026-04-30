@@ -71,7 +71,7 @@ struct CursorProviderImplementation: ProviderImplementation {
                 trailingText: {
                     guard let entry = CookieHeaderCache.load(provider: .cursor) else { return nil }
                     let when = entry.storedAt.relativeDescription()
-                    return "Cached: \(entry.sourceLabel) • \(when)"
+                    return localizedUIFormat("provider.cache.cached_at", entry.sourceLabel, when)
                 }),
         ]
     }
@@ -94,9 +94,9 @@ struct CursorProviderImplementation: ProviderImplementation {
         let used = UsageFormatter.currencyString(cost.used, currencyCode: cost.currencyCode)
         if cost.limit > 0 {
             let limitStr = UsageFormatter.currencyString(cost.limit, currencyCode: cost.currencyCode)
-            entries.append(.text("On-Demand: \(used) / \(limitStr)", .primary))
+            entries.append(.text(localizedUIFormat("usage.on_demand.with_limit", used, limitStr), .primary))
         } else {
-            entries.append(.text("On-Demand: \(used)", .primary))
+            entries.append(.text(localizedUIFormat("usage.on_demand", used), .primary))
         }
     }
 }
