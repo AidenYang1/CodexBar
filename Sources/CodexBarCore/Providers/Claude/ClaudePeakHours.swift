@@ -19,7 +19,7 @@ public enum ClaudePeakHours: Sendable {
               let minute = components.minute,
               let weekday = components.weekday
         else {
-            return Status(isPeak: false, label: NSLocalizedString("claude.peak.off_peak", comment: ""))
+            return Status(isPeak: false, label: NSLocalizedString("claude.peak.off_peak", value: "Off-peak", comment: ""))
         }
 
         let isWeekday = weekday >= 2 && weekday <= 6
@@ -33,7 +33,7 @@ public enum ClaudePeakHours: Sendable {
             return Status(
                 isPeak: true,
                 label: String(
-                    format: NSLocalizedString("claude.peak.ends_in", comment: ""),
+                    format: NSLocalizedString("claude.peak.ends_in", value: "Peak · ends in %@", comment: ""),
                     self.formatDuration(minutes: remaining)))
         }
 
@@ -43,7 +43,7 @@ public enum ClaudePeakHours: Sendable {
         return Status(
             isPeak: false,
             label: String(
-                format: NSLocalizedString("claude.peak.next_peak_in", comment: ""),
+                format: NSLocalizedString("claude.peak.next_peak_in", value: "Off-peak · peak in %@", comment: ""),
                 self.formatDuration(minutes: minutes)))
     }
 

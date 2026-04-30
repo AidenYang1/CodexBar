@@ -529,14 +529,14 @@ public enum CursorStatusProbeError: LocalizedError, Sendable {
     public var errorDescription: String? {
         switch self {
         case .notLoggedIn:
-            NSLocalizedString("error.cursor.not_logged_in", comment: "")
+            NSLocalizedString("error.cursor.not_logged_in", value: "Not logged in to Cursor. Please log in via the CodexBar menu.", comment: "")
         case let .networkError(msg):
             "Cursor API error: \(msg)"
         case let .parseFailed(msg):
             "Could not parse Cursor usage: \(msg)"
         case .noSessionCookie:
             String(
-                format: NSLocalizedString("error.cursor.no_session", comment: ""),
+                format: NSLocalizedString("error.cursor.no_session", value: "No Cursor session found. Please log in to cursor.com in %@. If you use Safari, grant CodexBar Full Disk Access in System Settings ▸ Privacy & Security. You can also sign in to Cursor from the CodexBar menu (Add / switch account).", comment: ""),
                 cursorCookieImportOrder.loginHint)
         }
     }

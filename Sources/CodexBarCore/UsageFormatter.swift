@@ -10,14 +10,14 @@ public enum UsageFormatter {
         let percent = showUsed ? used : remaining
         let clamped = min(100, max(0, percent))
         let suffix = showUsed
-            ? NSLocalizedString("usage.percent.used", comment: "")
-            : NSLocalizedString("usage.percent.left", comment: "")
+            ? NSLocalizedString("usage.percent.used", value: "used", comment: "")
+            : NSLocalizedString("usage.percent.left", value: "left", comment: "")
         return String(format: "%.0f%% %@", clamped, suffix)
     }
 
     public static func resetCountdownDescription(from date: Date, now: Date = .init()) -> String {
         let seconds = max(0, date.timeIntervalSince(now))
-        if seconds < 1 { return NSLocalizedString("time.now", comment: "") }
+        if seconds < 1 { return NSLocalizedString("time.now", value: "now", comment: "") }
 
         let totalMinutes = max(1, Int(ceil(seconds / 60.0)))
         let days = totalMinutes / (24 * 60)
@@ -26,17 +26,17 @@ public enum UsageFormatter {
 
         if days > 0 {
             if hours > 0 {
-                return String(format: NSLocalizedString("time.in_days_hours", comment: ""), days, hours)
+                return String(format: NSLocalizedString("time.in_days_hours", value: "in %dd %dh", comment: ""), days, hours)
             }
-            return String(format: NSLocalizedString("time.in_days", comment: ""), days)
+            return String(format: NSLocalizedString("time.in_days", value: "in %dd", comment: ""), days)
         }
         if hours > 0 {
             if minutes > 0 {
-                return String(format: NSLocalizedString("time.in_hours_minutes", comment: ""), hours, minutes)
+                return String(format: NSLocalizedString("time.in_hours_minutes", value: "in %dh %dm", comment: ""), hours, minutes)
             }
-            return String(format: NSLocalizedString("time.in_hours", comment: ""), hours)
+            return String(format: NSLocalizedString("time.in_hours", value: "in %dh", comment: ""), hours)
         }
-        return String(format: NSLocalizedString("time.in_minutes", comment: ""), totalMinutes)
+        return String(format: NSLocalizedString("time.in_minutes", value: "in %dm", comment: ""), totalMinutes)
     }
 
     public static func resetDescription(from date: Date, now: Date = .init()) -> String {
@@ -48,7 +48,7 @@ public enum UsageFormatter {
         if let tomorrow = calendar.date(byAdding: .day, value: 1, to: now),
            calendar.isDate(date, inSameDayAs: tomorrow)
         {
-            return String(format: NSLocalizedString("time.tomorrow_at", comment: ""), date.formatted(date: .omitted, time: .shortened))
+            return String(format: NSLocalizedString("time.tomorrow_at", value: "tomorrow, %@", comment: ""), date.formatted(date: .omitted, time: .shortened))
         }
         return date.formatted(date: .abbreviated, time: .shortened)
     }
@@ -62,14 +62,14 @@ public enum UsageFormatter {
             let text = style == .countdown
                 ? self.resetCountdownDescription(from: date, now: now)
                 : self.resetDescription(from: date, now: now)
-            return String(format: NSLocalizedString("usage.resets", comment: ""), text)
+            return String(format: NSLocalizedString("usage.resets", value: "Resets %@", comment: ""), text)
         }
 
         if let desc = window.resetDescription {
             let trimmed = desc.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !trimmed.isEmpty else { return nil }
             if trimmed.lowercased().hasPrefix("resets") { return trimmed }
-            return String(format: NSLocalizedString("usage.resets", comment: ""), trimmed)
+            return String(format: NSLocalizedString("usage.resets", value: "Resets %@", comment: ""), trimmed)
         }
         return nil
     }
@@ -77,24 +77,24 @@ public enum UsageFormatter {
     public static func updatedString(from date: Date, now: Date = .init()) -> String {
         let delta = now.timeIntervalSince(date)
         if abs(delta) < 60 {
-            return NSLocalizedString("usage.updated.just_now", comment: "")
+            return NSLocalizedString("usage.updated.just_now", value: "Updated just now", comment: "")
         }
         if let hours = Calendar.current.dateComponents([.hour], from: date, to: now).hour, hours < 24 {
             #if os(macOS)
             let rel = RelativeDateTimeFormatter()
             rel.unitsStyle = .abbreviated
-            return String(format: NSLocalizedString("usage.updated.relative", comment: ""), rel.localizedString(for: date, relativeTo: now))
+            return String(format: NSLocalizedString("usage.updated.relative", value: "Updated %@", comment: ""), rel.localizedString(for: date, relativeTo: now))
             #else
             let seconds = max(0, Int(now.timeIntervalSince(date)))
             if seconds < 3600 {
                 let minutes = max(1, seconds / 60)
-                return String(format: NSLocalizedString("usage.updated.minutes_ago", comment: ""), minutes)
+                return String(format: NSLocalizedString("usage.updated.minutes_ago", value: "Updated %dm ago", comment: ""), minutes)
             }
             let wholeHours = max(1, seconds / 3600)
-            return String(format: NSLocalizedString("usage.updated.hours_ago", comment: ""), wholeHours)
+            return String(format: NSLocalizedString("usage.updated.hours_ago", value: "Updated %dh ago", comment: ""), wholeHours)
             #endif
         } else {
-            return String(format: NSLocalizedString("usage.updated.at_time", comment: ""), date.formatted(date: .omitted, time: .shortened))
+            return String(format: NSLocalizedString("usage.updated.at_time", value: "Updated %@", comment: ""), date.formatted(date: .omitted, time: .shortened))
         }
     }
 
@@ -105,7 +105,7 @@ public enum UsageFormatter {
         // Use explicit locale for consistent formatting on all systems
         number.locale = Locale(identifier: "en_US_POSIX")
         let formatted = number.string(from: NSNumber(value: value)) ?? String(format: "%.2f", value)
-        return String(format: NSLocalizedString("credits.left", comment: ""), formatted)
+        return String(format: NSLocalizedString("credits.left", value: "%@ left", comment: ""), formatted)
     }
 
     /// Formats a USD value with proper negative handling and thousand separators.
